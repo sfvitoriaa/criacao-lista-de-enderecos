@@ -13,14 +13,14 @@ h1 { text-align: center; margin-bottom: 2rem; color: #333; }
   margin-bottom: 2rem;
 }
 
-h2 { margin-bottom: 1.5rem; color: #000000; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+h2 { margin-bottom: 1.5rem; color: #4b4b4b; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
 
 .form-grid { display: flex; flex-direction: column; gap: 1rem; }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
 .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
 
-label { font-weight: 600; color: #000000; font-size: 0.9rem; }
+label { font-weight: 600; color: #3f3f3f; font-size: 0.9rem; }
 
 input, select {
   padding: 0.8rem;
@@ -44,6 +44,10 @@ button {
   margin-top: 10px;
 }
 button:hover { background-color: #ff54d4; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+th { background-color: #f8fafc; color: #ff5af7; }
 
 .msg { padding: 10px; border-radius: 4px; text-align: center; margin-top: 10px; font-weight: bold; }
 .error { background-color: #fee2e2; color: #ff00d4; }

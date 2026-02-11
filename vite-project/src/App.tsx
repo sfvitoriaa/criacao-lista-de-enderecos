@@ -73,9 +73,10 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Formulário</h1>
+      <h1>Cadastro</h1>
 
       <div className="card">
+        <h2>Novo Endereço</h2>
         <form onSubmit={handleSubmit} className="form-grid">
           
           <div className="input-group">
@@ -119,15 +120,6 @@ function App() {
               <option value="RJ">RJ</option>
               <option value="MG">MG</option>
               <option value="RS">RS</option>
-              <option value="AC">AC</option>
-              <option value="AL">AL</option>
-              <option value="AP">AP</option>
-              <option value="AM">AM</option>
-              <option value="BA">BA</option>
-              <option value="CE">CE</option>
-              <option value="ES">ES</option>
-              <option value="GO">GO</option>
-              <option value="DF">DF</option>
             </select>
           </div>
 
@@ -135,6 +127,30 @@ function App() {
         </form>
         
         {message.text && <div className={`msg ${message.type}`}>{message.text}</div>}
+      </div>
+
+      <div className="card">
+        <h2>Lista Salva</h2>
+        {addresses.length === 0 ? <p>Nada cadastrado.</p> : (
+          <table>
+            <thead>
+              <tr>
+                <th>CEP</th>
+                <th>Endereço</th>
+                <th>Cidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {addresses.map(addr => (
+                <tr key={addr.id}>
+                  <td>{addr.cep}</td>
+                  <td>{addr.street}, {addr.number}</td>
+                  <td>{addr.city}-{addr.state}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
