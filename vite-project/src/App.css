@@ -1,0 +1,52 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+body { background-color: rgb(255, 216, 253); padding: 20px; display: flex; justify-content: center; }
+
+.container { width: 100%; max-width: 800px; }
+
+h1 { text-align: center; margin-bottom: 2rem; color: #333; }
+
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+h2 { margin-bottom: 1.5rem; color: #000000; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+
+.form-grid { display: flex; flex-direction: column; gap: 1rem; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+label { font-weight: 600; color: #000000; font-size: 0.9rem; }
+
+input, select {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+
+  background-color: #ffffff; 
+  color: #000000;
+}
+
+button {
+  background-color: #ffaced;
+  color: rgb(0, 0, 0);
+  padding: 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: 10px;
+}
+button:hover { background-color: #ff54d4; }
+
+.msg { padding: 10px; border-radius: 4px; text-align: center; margin-top: 10px; font-weight: bold; }
+.error { background-color: #fee2e2; color: #ff00d4; }
+.success { background-color: #fef9ff; color: #000000; }
+
+@media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
