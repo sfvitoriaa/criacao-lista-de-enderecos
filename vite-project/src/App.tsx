@@ -12,146 +12,84 @@ interface Address {
 }
 
 function App() {
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [list, setList] = useState<Address[]>([]);
+  const [msg, setMsg] = useState('');
   
-  const [formData, setFormData] = useState({
-    cep: '',
-    street: '',
-    number: '',
-    neighborhood: '',
-    city: '',
-    state: ''
+  const [form, setForm] = useState({
+    cep: '', street: '', number: '', neighborhood: '', city: '', state: ''
   });
 
-  const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' | '' }>({ text: '', type: '' });
-
   useEffect(() => {
-    const saved = localStorage.getItem('db_addresses');
-    if (saved) {
-      try {
-        setAddresses(JSON.parse(saved));
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    const saved = localStorage.getItem('db_addr');
+    if (saved) setList(JSON.parse(saved));
   }, []);
 
   useEffect(() => {
-    if (addresses.length > 0) {
-       localStorage.setItem('db_addresses', JSON.stringify(addresses));
-    }
-  }, [addresses]);
+    localStorage.setItem('db_addr', JSON.stringify(list));
+  }, [list]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const download = () => {
+    if (list.length === 0) return;
+    const data = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(list, null, 2))}`;
+    const a = document.createElement("a");
+    a.href = data;
+    a.download = "backup.json";
+    a.click();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const save = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.cep || !formData.street || !formData.number || !formData.city || !formData.state) {
-      setMessage({ text: 'Preencha tudo!', type: 'error' });
+    if (!form.cep || !form.street) {
+      setMsg('Preencha os dados.');
       return;
     }
-
-    if (formData.cep.length !== 8) {
-      setMessage({ text: 'CEP deve ter 8 números', type: 'error' });
-      return;
-    }
-
-    const newAddress: Address = {
-      ...formData,
-      id: Date.now().toString()
-    };
-
-    setAddresses([...addresses, newAddress]);
-    setMessage({ text: 'Salvo com sucesso!', type: 'success' });
-    setFormData({ cep: '', street: '', number: '', neighborhood: '', city: '', state: '' });
-
-    setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+    setList([...list, { ...form, id: Date.now().toString() }]);
+    setMsg('Salvo.');
+    setForm({ cep: '', street: '', number: '', neighborhood: '', city: '', state: '' });
+    setTimeout(() => setMsg(''), 2000);
   };
 
   return (
-    <div className="container">
-      <h1>Cadastro</h1>
+    <div>
+      <h1>Endereços</h1>
+      
+      <button onClick={download} className="btn-backup">Baixar Backup</button>
 
-      <div className="card">
-        <h2>Novo Endereço</h2>
-        <form onSubmit={handleSubmit} className="form-grid">
-          
-          <div className="input-group">
-            <label>CEP</label>
-            <input 
-              name="cep" 
-              value={formData.cep} 
-              onChange={handleChange} 
-              maxLength={8} 
-              placeholder="00000000"
-            />
-          </div>
-
-          <div className="row">
-            <div className="input-group">
-              <label>Rua</label>
-              <input name="street" value={formData.street} onChange={handleChange} />
-            </div>
-            <div className="input-group">
-              <label>Número</label>
-              <input name="number" type="number" value={formData.number} onChange={handleChange} />
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="input-group">
-              <label>Bairro</label>
-              <input name="neighborhood" value={formData.neighborhood} onChange={handleChange} />
-            </div>
-            <div className="input-group">
-              <label>Cidade</label>
-              <input name="city" value={formData.city} onChange={handleChange} />
-            </div>
-          </div>
-
-          <div className="input-group">
-            <label>Estado</label>
-            <select name="state" value={formData.state} onChange={handleChange}>
-              <option value="">Selecione</option>
-              <option value="SP">SP</option>
-              <option value="RJ">RJ</option>
-              <option value="MG">MG</option>
-              <option value="RS">RS</option>
-            </select>
-          </div>
-
-          <button type="submit">Salvar</button>
-        </form>
+      <form onSubmit={save}>
+        <input name="cep" value={form.cep} onChange={handleChange} placeholder="CEP" maxLength={8} />
+        <input name="street" value={form.street} onChange={handleChange} placeholder="Rua" />
+        <input name="number" value={form.number} onChange={handleChange} placeholder="Número" type="number" />
+        <input name="neighborhood" value={form.neighborhood} onChange={handleChange} placeholder="Bairro" />
+        <input name="city" value={form.city} onChange={handleChange} placeholder="Cidade" />
         
-        {message.text && <div className={`msg ${message.type}`}>{message.text}</div>}
-      </div>
+        <select name="state" value={form.state} onChange={handleChange}>
+          <option value="">UF</option>
+          <option value="SP">SP</option>
+          <option value="RJ">RJ</option>
+          <option value="MG">MG</option>
+          <option value="RS">RS</option>
+        </select>
 
-      <div className="card">
-        <h2>Lista Salva</h2>
-        {addresses.length === 0 ? <p>Nada cadastrado.</p> : (
-          <table>
-            <thead>
-              <tr>
-                <th>CEP</th>
-                <th>Endereço</th>
-                <th>Cidade</th>
-              </tr>
-            </thead>
-            <tbody>
-              {addresses.map(addr => (
-                <tr key={addr.id}>
-                  <td>{addr.cep}</td>
-                  <td>{addr.street}, {addr.number}</td>
-                  <td>{addr.city}-{addr.state}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+        <button type="submit">Salvar</button>
+      </form>
+
+      {msg && <div className="msg">{msg}</div>}
+
+      <table>
+        <tbody>
+          {list.map(i => (
+            <tr key={i.id}>
+              <td>{i.cep}</td>
+              <td>{i.street}, {i.number}</td>
+              <td style={{textAlign: 'right'}}>{i.state}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
